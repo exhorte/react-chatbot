@@ -1,30 +1,11 @@
-import { useState, useEffect } from "react";
-import { GoogleGenAI } from "@google/genai";
+import { useState } from "react";
+import { Assistant } from "./assistants/googleai";
 import { Chat } from "./components/Chat/Chat";
 import { Controls } from "./components/Controls/Controls";
 import styles from "./App.module.css";
 
-// Configure accurately as per snippet
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GOGGLE_AI_API_KEY,
-});
-
-async function main() {
-  try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: "How does AI work?",
-    });
-    console.log(response.text);
-  } catch (err) {
-    console.error("Main function error:", err);
-  }
-}
-
-// Initial test run as requested
-main();
-
 function App() {
+  const [assistant] = useState(() => new Assistant());
   const [messages, setMessages] = useState([]);
 
   function addMessage(message) {
@@ -34,15 +15,11 @@ function App() {
   async function handleContentSend(content) {
     addMessage({ content, role: "user" });
     try {
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: content,
-      });
-      addMessage({ content: response.text, role: "assistant" });
+      const result = await assistant.chat(content);
+      addMessage({ content: result, role: "assistant" });
     } catch (error) {
-      console.error("API Error:", error);
       addMessage({
-        content: "Sorry, I couldn't process your request. Check console for details.",
+        content: "Sorry, I couldn't process your request. Please try again!",
         role: "system",
       });
     }
