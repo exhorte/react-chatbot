@@ -1,13 +1,28 @@
-import { useState } from "react";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { useState, useEffect } from "react";
+import { GoogleGenAI } from "@google/genai";
 import { Chat } from "./components/Chat/Chat";
 import { Controls } from "./components/Controls/Controls";
 import styles from "./App.module.css";
 
-const apiKey = import.meta.env.VITE_GOOGLE_AI_API_KEY;
-const googleai = new GoogleGenerativeAI(apiKey);
-const model = googleai.getGenerativeModel({ model: "gemini-2.5-flash" });
-const chat = model.startChat({ history: [] });
+// Configure accurately as per snippet
+const ai = new GoogleGenAI({
+  apiKey: import.meta.env.VITE_GOGGLE_AI_API_KEY,
+});
+
+async function main() {
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: "How does AI work?",
+    });
+    console.log(response.text);
+  } catch (err) {
+    console.error("Main function error:", err);
+  }
+}
+
+// Initial test run as requested
+main();
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -17,21 +32,18 @@ function App() {
   }
 
   async function handleContentSend(content) {
-    if (!apiKey) {
-      addMessage({ content: "API Key is missing. Please check your .env.local file.", role: "system" });
-      return;
-    }
-
     addMessage({ content, role: "user" });
     try {
-      const result = await chat.sendMessage(content);
-      const responseText = result.response.text();
-      addMessage({ content: responseText, role: "assistant" });
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: content,
+      });
+      addMessage({ content: response.text, role: "assistant" });
     } catch (error) {
-      console.error("Chat Error:", error);
+      console.error("API Error:", error);
       addMessage({
-        content: "Sorry, I could not process your request. Please try again.",
-        role: "system"
+        content: "Sorry, I couldn't process your request. Check console for details.",
+        role: "system",
       });
     }
   }
@@ -39,7 +51,7 @@ function App() {
   return (
     <div className={styles.App}>
       <header className={styles.Header}>
-        <img className={styles.Logo} src="/chat-bot.png" alt="Bot Logo" />
+        <img className={styles.Logo} src="/chat-bot.png" />
         <h2 className={styles.Title}>AI Chatbot</h2>
       </header>
       <div className={styles.ChatContainer}>
