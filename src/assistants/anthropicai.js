@@ -9,7 +9,7 @@ export class Assistant {
   #client;
   #model;
 
-  constructor(model = "claude-3-5-haiku-latest" + 1, client = anthropic) {
+  constructor(model = "claude-3-5-haiku-latest", client = anthropic) {
     this.#client = client;
     this.#model = model;
   }

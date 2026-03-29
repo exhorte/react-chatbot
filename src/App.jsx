@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { Assistant as AssistanClass } from "./assistants/anthropicai";
+import { Assistant as AssistantClass } from "./assistants/anthropicai";
 import { Loader } from "./components/Loader/Loader";
 import { Chat } from "./components/Chat/Chat";
 import { Controls } from "./components/Controls/Controls";
 import { Assistant } from "./components/Assistant/Assistant";
 import styles from "./App.module.css";
 
+let assistant;
+
 function App() {
-  let assistant;
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
