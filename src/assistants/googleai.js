@@ -1,37 +1,49 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({
+const googleai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_GOGGLE_AI_API_KEY,
 });
 
 export class Assistant {
-  #model;
-  #history;
+  #chat;
 
-  constructor(model = "gemini-3-flash-preview") {
-    this.#model = model;
-    this.#history = []; // Maintaining local history to prevent loss
+  constructor(model = "gemini-1.5-flash") {
+    this.#chat = googleai.chats.create({ model });
   }
 
   async chat(content) {
     try {
-      // Logic for multi-turn chat using the @google/genai unified client
-      this.#history.push({ role: "user", parts: [{ text: content }] });
-      
-      const response = await ai.models.generateContent({
-        model: this.#model,
-        contents: this.#history,
-      });
-
-      const responseText = response.text;
-      
-      // Update history with assistant's response
-      this.#history.push({ role: "model", parts: [{ text: responseText }] });
-      
-      return responseText;
+      const result = await this.#chat.sendMessage({ message: content });
+      return result.text;
     } catch (error) {
-      console.error("Gemini Assistant Error:", error);
-      throw error;
+      throw this.#parseError(error);
+    }
+  }
+
+  async *chatStream(content) {
+    try {
+      const result = await this.#chat.sendMessageStream({ message: content });
+
+      for await (const chunk of result) {
+        yield chunk.text;
+      }
+    } catch (error) {
+      throw this.#parseError(error);
+    }
+  }
+
+  #parseError(error) {
+    try {
+      // Extract and parse the outer error JSON from the message string
+      const [, outerErrorJSON] = error?.message?.split(" . ");
+      const outerErrorObject = JSON.parse(outerErrorJSON);
+
+      // Parse the nested stringified JSON from the outer error
+      const innerErrorObject = JSON.parse(outerErrorObject?.error?.message);
+
+      return innerErrorObject?.error;
+    } catch (parseError) {
+      return error;
     }
   }
 }
