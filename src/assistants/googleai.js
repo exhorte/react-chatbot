@@ -7,7 +7,7 @@ const googleai = new GoogleGenAI({
 export class Assistant {
   #chat;
 
-  constructor(model = "gemini-1.5-flash") {
+  constructor(model = "gemini-3-flash-preview") {
     this.#chat = googleai.chats.create({ model });
   }
 
