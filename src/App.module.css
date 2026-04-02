@@ -8,7 +8,23 @@
 }
 
 .Header {
+  padding-left: calc(260px + 16px);
   text-align: center;
+}
+
+.Content {
+  display: flex;
+  flex-grow: 1;
+  gap: 16px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.Main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 16px;
 }
 
 .Logo {
@@ -30,6 +46,9 @@
 
 .Configuration {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 16px;
+  gap: 8px;
+  font-size: 14px;
+  opacity: 0.8;
 }
