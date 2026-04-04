@@ -35,11 +35,12 @@ export function Assistant({ onAssistantChange }) {
   return (
     <div className={styles.Assistant}>
       <span>Assistant:</span>
-      <select defaultValue={value} onChange={handleValueChange} className={styles.Select}>
-        
+      <select defaultValue={value} onChange={handleValueChange}>
         <optgroup label="Google AI">
-          <option value="gemini-3-flash-preview">Gemini 3 Flash</option>
-          <option value="gemini-3.1-flash-image-preview">🍌Nano Banana 2</option>
+          <option value="googleai:gemini-3-flash-preview">Gemini 3 Flash</option>
+          <option value="googleai:gemini-2.0-flash-lite">
+            Gemini 2.0 Flash-Lite
+          </option>
         </optgroup>
 
         <optgroup label="Open AI">

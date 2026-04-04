@@ -1,16 +1,4 @@
 .Theme {
   display: flex;
-  justify-content: center;
   gap: 8px;
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-.Theme select {
-  padding: 5px 10px;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  outline: none;
-  border: 1px solid #ccc;
 }
